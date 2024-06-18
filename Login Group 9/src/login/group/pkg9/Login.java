@@ -4,12 +4,29 @@
  */
 package login.group.pkg9;
 
+import javax.swing.JOptionPane;
+import com.opencsv.CSVReader;
+import com.opencsv.CSVWriter;
+import static com.opencsv.ICSVWriter.NO_QUOTE_CHARACTER;
+import com.opencsv.exceptions.CsvException;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.lang.String;
+
 /**
  *
  * @author Shekinah Jabez
  */
 public class Login extends javax.swing.JFrame {
 
+    private static final String CSV_FILE = "src/login/group/pkg9/Credentials.csv";
+    
     /**
      * Creates new form Login
      */
@@ -58,8 +75,18 @@ public class Login extends javax.swing.JFrame {
 
         jUnameField.setForeground(new java.awt.Color(0, 0, 51));
         jUnameField.setBorder(javax.swing.BorderFactory.createMatteBorder(1, 1, 1, 1, new java.awt.Color(255, 255, 255)));
+        jUnameField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jUnameFieldActionPerformed(evt);
+            }
+        });
 
         jPwordField.setForeground(new java.awt.Color(0, 0, 51));
+        jPwordField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jPwordFieldActionPerformed(evt);
+            }
+        });
 
         jBtnLogin.setText("LOGIN");
         jBtnLogin.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -153,8 +180,60 @@ public class Login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jBtnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnLoginActionPerformed
-        // TODO add your handling code here:
+        String userName = jUnameField.getText();
+        //String passWord = new String (jPwordField.getText());
+        String passWord = jPwordField.getText();       
+        Boolean isValidLogIn = false;
+        
+        try {
+            isValidLogIn = validateLogin(userName, passWord);
+        } catch (IOException ex) {
+            Logger.getLogger(Login.class.getName()).log(Level.SEVERE, null, ex);
+        }
+          
+        if(!isValidLogIn){
+           JOptionPane.showMessageDialog(this, 
+                                         "Incorrect Credential.",
+                                         "",
+                                         JOptionPane.ERROR_MESSAGE);
+        }
+        else
+        {
+           JOptionPane.showMessageDialog(this, 
+                                         "Log In Successful!!!",
+                                         "",
+                                         JOptionPane.PLAIN_MESSAGE);
+        }
     }//GEN-LAST:event_jBtnLoginActionPerformed
+    
+    private boolean validateLogin(String userName, String passWord) throws IOException{
+        
+        String line = "";
+        CSVReader csvReader = null;
+        
+        try{             
+            csvReader = new CSVReader(new FileReader(new File(CSV_FILE)));                
+            List<String[]> allData = csvReader.readAll();                                             
+            for(int i=0;i<allData.size();i++){
+                String[] valUserName = new String [allData.get(i).length]; 
+                valUserName = allData.get(i);                  
+                if (valUserName[0].equalsIgnoreCase(userName)){
+                    if(valUserName[1].equals(passWord)){
+                        return true;}                                            
+                }
+            }            
+        }catch(CsvException e){e.printStackTrace();}           
+        finally{csvReader.close();}
+        return false;
+    }
+    
+    private void jPwordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPwordFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jPwordFieldActionPerformed
+
+    private void jUnameFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jUnameFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jUnameFieldActionPerformed
 
     /**
      * @param args the command line arguments
