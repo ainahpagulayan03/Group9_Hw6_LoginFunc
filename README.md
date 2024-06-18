@@ -25,10 +25,3 @@ For Maven, add the following to your `pom.xml`:
         <version>3.14.0</version>
     </dependency>
 </dependencies>
-
-For Gradle, include this in your build.gradle:
-
-dependencies {
-    implementation 'com.opencsv:opencsv:5.9'
-    implementation 'org.apache.commons:commons-lang3:3.14.0'
-}
